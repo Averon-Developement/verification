@@ -7,18 +7,24 @@ from core import colors
 
 
 class VerifyUrlButton(Button):
+    """
+    Custom link button that directs users to an external verification page.
+    """
     def __init__(
         self,
         label: str,
         url: str | None = None,
     ):
         super().__init__(
-            label=label, 
+            label=label,
             url=url
         )
 
 
 class VerificationStartButton(Button):
+    """
+    Entry point for the server verification workflow.
+    """
     def __init__(self) -> None:
         super().__init__(
             label="Start Verification",
@@ -27,6 +33,12 @@ class VerificationStartButton(Button):
         )
 
     async def callback(self, interaction: Interaction) -> None:
+        """
+        Validate the user's verification status and present the next step
+        in the verification process.
+
+        :param interaction: The interaction that triggered the button.
+        """
         from ..components import (
             CustomMessageComponent, VerificationFollowupPanel
         )
