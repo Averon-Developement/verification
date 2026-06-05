@@ -23,6 +23,6 @@ class Config:
 
     # Verification URI
     VERIFICATION_URI: str = getenv("VERIFICATION_URI")
-
+    PRIVACY_POLICY_URI: str = getenv("PRIVACY_POLICY_URI")
 
 cfg = Config()

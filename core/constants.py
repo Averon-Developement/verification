@@ -4,6 +4,7 @@ class Colors:
 
 colors = Colors()
 
+
 class DiscordLinks:
     DISCORD_API: str = "https://discord.com/api/v10"
     DISCORD_OAUTH_URL: str = "https://discord.com/oauth2/authorize"

@@ -50,7 +50,7 @@ class VerificationFollowupPanel(LayoutView):
         container.add_item(
             ActionRow(
                 VerifyUrlButton(label='Authorize', url=f"{cfg.VERIFICATION_URI}"),
-                VerifyUrlButton(label='Privacy Policy', url="https://google.com")
+                VerifyUrlButton(label='Privacy Policy', url=f"{cfg.PRIVACY_POLICY_URI}")
             )
         )
         self.add_item(container)    
