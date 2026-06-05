@@ -4,7 +4,7 @@ import httpx
 from quart import Blueprint, jsonify
 
 from core import cfg, logger
-from core.database.handlers.api_handler import RestoreHandler
+from core.database.handlers import RestoreHandler
 
 
 restore_bp = Blueprint("restore", __name__, url_prefix="/restore")

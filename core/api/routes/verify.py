@@ -3,7 +3,7 @@ import httpx
 from quart import Blueprint, redirect, request, jsonify
 
 from core import cfg
-from core.database.handlers.api_handler import VerifyHandler
+from core.database.handlers import VerifyHandler
 
 
 verify_bp = Blueprint("verify", __name__, url_prefix="/verify")

@@ -1,6 +1,6 @@
 from quart import Blueprint, jsonify
 
-from core.database.handlers.api_handler import MemberHandler
+from core.database.handlers import MemberHandler
 
 
 members_bp = Blueprint("members", __name__, url_prefix="/members")
