@@ -4,18 +4,18 @@ from discord import app_commands, Interaction, TextChannel
 from core.ui.components import VerificationPanel        
 
 
-class Setup(commands.Cog):
+class Panel(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
 
     @app_commands.command(
-        name="setup",
+        name="panel",
         description="Send the verification panel to a channel."
     )
     @app_commands.describe(
         channel="The channel where the verification panel should be sent."
     )
-    async def setup(
+    async def panel(
         self, interaction: Interaction, channel: TextChannel
     ):
         await interaction.response.defer(ephemeral=True)
@@ -33,4 +33,4 @@ class Setup(commands.Cog):
 
 
 async def setup(client: commands.Bot) -> None:
-    await client.add_cog(Setup(client))
+    await client.add_cog(Panel(client))
