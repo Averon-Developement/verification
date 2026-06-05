@@ -1,6 +1,7 @@
 import asyncio
-from core.api import create_app
+
 from core import cfg
+from core.api import create_app
 from app.client import Client
 
 

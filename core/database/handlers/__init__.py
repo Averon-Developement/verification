@@ -1,5 +1,7 @@
 from .settings import SettingsHandler
-from .api import MemberHandler, RestoreHandler, VerifyHandler
+from .member import MemberHandler
+from .restore import RestoreHandler
+from .verification import VerifyHandler
 
 __all__ = [
     "SettingsHandler",

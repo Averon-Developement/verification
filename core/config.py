@@ -21,5 +21,8 @@ class Config:
     DISCORD_CLIENT_SECRET: str = getenv("DISCORD_CLIENT_SECRET")
     DISCORD_REDIRECT_URI: str = getenv("DISCORD_REDIRECT_URI")
 
+    # Verification URI
+    VERIFICATION_URI: str = getenv("VERIFICATION_URI")
+
 
 cfg = Config()
