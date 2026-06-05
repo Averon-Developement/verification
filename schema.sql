@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS settings (
     role_id BIGINT NULL,
     logs_channel_id BIGINT NULL,
     dm_user BOOLEAN NOT NULL DEFAULT FALSE
-)
+);
 
 CREATE TABLE IF NOT EXISTS servers (
     id               INT PRIMARY KEY AUTO_INCREMENT,
