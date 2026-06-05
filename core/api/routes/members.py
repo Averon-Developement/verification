@@ -3,7 +3,11 @@ from quart import Blueprint, jsonify
 from core.database.handlers import MemberHandler
 
 
-members_bp = Blueprint("members", __name__, url_prefix="/members")
+members_bp = Blueprint(
+    "members",
+    __name__,
+    url_prefix="/members"
+)
 
 
 @members_bp.get("/<guild_id>")
@@ -13,7 +17,10 @@ async def get_members(guild_id: str):
     return jsonify({
         "guild_id": guild_id,
         "count": len(members),
-        "members": [{"discord_id": m.discord_id, "verified_at": str(m.verified_at)} for m in members],
+        "members": [{
+            "discord_id": m.discord_id,
+            "verified_at": str(m.verified_at)
+        } for m in members],
     }), 200
 
 

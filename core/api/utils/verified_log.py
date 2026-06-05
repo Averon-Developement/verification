@@ -1,9 +1,6 @@
 import httpx
 
-from core import cfg, logger, colors
-
-DISCORD_API = "https://discord.com/api/v10"
-
+from core import cfg, logger, colors, disc
 
 async def send_verification_log(
     client: httpx.AsyncClient,
@@ -11,16 +8,23 @@ async def send_verification_log(
     user: dict,
     role_id: int | None = None,
 ) -> bool:
-    
-    role_text = ""
+    """
+    Send a verification log message to a Discord channel.
 
+    :param client: The HTTP client used for the request.
+    :param channel_id: The ID of the channel to send the log to.
+    :param user: The verified user's Discord data.
+    :param role_id: The role granted to the user, if any.
+    :return: Whether the log message was sent successfully.
+    """
+    role_text = ""
     if role_id:
         role_text = (
             f"> Granted role: <@&{role_id}> `({role_id})`"
         )
 
     response = await client.post(
-        f"{DISCORD_API}/channels/{channel_id}/messages",
+        f"{disc.DISCORD_API}/channels/{channel_id}/messages",
         headers={
             "Authorization": f"Bot {cfg.TOKEN}",
             "Content-Type": "application/json",

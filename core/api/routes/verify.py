@@ -2,19 +2,24 @@ import asyncio
 from urllib.parse import urlencode
 
 import httpx
-from quart import Blueprint, redirect, render_template, request
+from quart import (
+    Blueprint,
+    redirect,
+    render_template,
+    request
+)
 
-from core import cfg, logger
+from core import cfg, logger, disc
 from core.database.handlers import SettingsHandler, VerifyHandler
+
 from ..utils import send_verification_log
 
-verify_bp = Blueprint("verify", __name__, url_prefix="/verify")
 
-DISCORD_API = "https://discord.com/api/v10"
-DISCORD_OAUTH_URL = "https://discord.com/oauth2/authorize"
-DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
-
-SCOPES = "identify guilds.join"
+verify_bp = Blueprint(
+    "verify",
+    __name__,
+    url_prefix="/verify"
+)
 
 
 async def render_error():
@@ -38,12 +43,12 @@ async def verify():
             "client_id": cfg.DISCORD_CLIENT_ID,
             "redirect_uri": cfg.DISCORD_REDIRECT_URI,
             "response_type": "code",
-            "scope": SCOPES,
+            "scope": disc.SCOPES,
             "state": guild_id,
         }
     )
 
-    return redirect(f"{DISCORD_OAUTH_URL}?{params}")
+    return redirect(f"{disc.DISCORD_OAUTH_URL}?{params}")
 
 
 @verify_bp.get("/callback")
@@ -62,7 +67,7 @@ async def callback():
 
         async with httpx.AsyncClient(timeout=10.0) as client:
             token_response = await client.post(
-                DISCORD_TOKEN_URL,
+                disc.DISCORD_TOKEN_URL,
                 data={
                     "client_id": cfg.DISCORD_CLIENT_ID,
                     "client_secret": cfg.DISCORD_CLIENT_SECRET,
@@ -76,16 +81,13 @@ async def callback():
             )
 
             if token_response.status_code != 200:
-                logger.error(
-                    "Token exchange failed: %s",
-                    token_response.text,
-                )
+                logger.error(f"Token exchange failed: {token_response.text}")
                 return await render_error()
 
             token_data = token_response.json()
 
             user_response = await client.get(
-                f"{DISCORD_API}/users/@me",
+                f"{disc.DISCORD_API}/users/@me",
                 headers={
                     "Authorization": (
                         f"Bearer {token_data['access_token']}"
@@ -94,10 +96,7 @@ async def callback():
             )
 
             if user_response.status_code != 200:
-                logger.error(
-                    "User fetch failed: %s",
-                    user_response.text,
-                )
+                logger.error(f"User fetch failed: {user_response.text}")
                 return await render_error()
 
             user = user_response.json()
@@ -121,28 +120,28 @@ async def callback():
                 SettingsHandler(int(guild_id)).get_settings
             )
 
-            logger.info(
-                "Settings for %s: role_id=%s, logs=%s, dm=%s",
-                guild_id,
-                settings.role_id,
-                settings.logs_channel_id,
-                settings.dm_user,
-            )
+            if settings.role_id:
+                member_response = await client.get(
+                    f"{disc.DISCORD_API}/guilds/{guild_id}/members/{discord_id}",
+                    headers={
+                        "Authorization": f"Bot {cfg.TOKEN}"
+                    },
+                )
+
+                if member_response.status_code == 200:
+                    member = member_response.json()
+
+                    if str(settings.role_id) in member.get("roles", []):
+                        return await render_template("already_verified.html")
 
             join_response = await client.put(
-                f"{DISCORD_API}/guilds/{guild_id}/members/{discord_id}",
+                f"{disc.DISCORD_API}/guilds/{guild_id}/members/{discord_id}",
                 json={
                     "access_token": token_data["access_token"]
                 },
                 headers={
                     "Authorization": f"Bot {cfg.TOKEN}"
                 },
-            )
-
-            logger.info(
-                "Guild join: %s %s",
-                join_response.status_code,
-                join_response.text,
             )
 
             if join_response.status_code not in (201, 204):
@@ -156,7 +155,7 @@ async def callback():
             if settings.role_id:
                 role_response = await client.put(
                     (
-                        f"{DISCORD_API}/guilds/{guild_id}"
+                        f"{disc.DISCORD_API}/guilds/{guild_id}"
                         f"/members/{discord_id}"
                         f"/roles/{settings.role_id}"
                     ),
@@ -166,18 +165,9 @@ async def callback():
                     },
                 )
 
-                logger.info(
-                    "Role assign: %s %s",
-                    role_response.status_code,
-                    role_response.text,
-                )
-
                 if role_response.status_code != 204:
                     logger.error(
-                        "Role assignment failed for %s: %s %s",
-                        discord_id,
-                        role_response.status_code,
-                        role_response.text,
+                        f"Role assignment failed for {discord_id}: {role_response.status_code} {role_response.text}"
                     )
                     return await render_error()
 
