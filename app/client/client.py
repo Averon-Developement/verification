@@ -4,6 +4,7 @@ from discord import Intents
 from discord.ext import commands
 
 from core import logger
+from core.ui.views import VerificationStartView
 
 
 intents = Intents.default()
@@ -32,6 +33,8 @@ class Client(commands.AutoShardedBot):
                     
                     except commands.errors.ExtensionNotFound:
                         logger.error(f"Failed to load {cog}")
+
+        self.add_view(VerificationStartView())
 
     async def on_ready(self):
         logger.info(f"Logged in as {self.user} (ID: {self.user.id})")
