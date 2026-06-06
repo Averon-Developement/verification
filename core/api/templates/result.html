@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Averon Verification</title>
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/main.css') }}"
-    >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
     <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Averon Logo" class="logo">
-    <h1 class="title">Already Verified</h1>
-    <p class="description">You are already verified. If you believe this is a mistake, please contact a server Administrator.</p>
+    <h1 class="title">{{ title }}</h1>
+    <p class="description">{{ description }}</p>
 </body>
 </html>

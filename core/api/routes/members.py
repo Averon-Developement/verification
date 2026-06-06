@@ -1,13 +1,16 @@
-from quart import Blueprint, jsonify
+from quart import Blueprint, jsonify, request
 
+from core import cfg
 from core.database.handlers import MemberHandler
 
 
-members_bp = Blueprint(
-    "members",
-    __name__,
-    url_prefix="/members"
-)
+members_bp = Blueprint("members", __name__, url_prefix="/members")
+
+
+@members_bp.before_request
+async def auth():
+    if request.headers.get("X-API-Key") != cfg.API_KEY:
+        return jsonify({"error": "Unauthorized"}), 401
 
 
 @members_bp.get("/<guild_id>")

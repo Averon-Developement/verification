@@ -22,8 +22,16 @@ verify_bp = Blueprint(
 )
 
 
+async def render_result(title: str, description: str, status: int = 200):
+    return await render_template("result.html", title=title, description=description), status
+
+
 async def render_error():
-    return await render_template("error.html"), 400
+    return await render_result(
+        title="Verification Failed",
+        description="Something went wrong. If this issue persists, please contact a server Administrator.",
+        status=400,
+    )
 
 
 @verify_bp.get("/")
@@ -89,9 +97,7 @@ async def callback():
             user_response = await client.get(
                 f"{disc.DISCORD_API}/users/@me",
                 headers={
-                    "Authorization": (
-                        f"Bearer {token_data['access_token']}"
-                    )
+                    "Authorization": f"Bearer {token_data['access_token']}"
                 },
             )
 
@@ -132,7 +138,10 @@ async def callback():
                     member = member_response.json()
 
                     if str(settings.role_id) in member.get("roles", []):
-                        return await render_template("already_verified.html")
+                        return await render_result(
+                            title="Already Verified",
+                            description="You are already verified. If you believe this is a mistake, please contact a server Administrator.",
+                        )
 
             join_response = await client.put(
                 f"{disc.DISCORD_API}/guilds/{guild_id}/members/{discord_id}",
@@ -182,7 +191,10 @@ async def callback():
             if settings.dm_user:
                 pass
 
-            return await render_template("verified.html")
+            return await render_result(
+                title="Successfully Verified",
+                description="You may now return back to Discord.",
+            )
 
     except Exception:
         logger.exception("Unhandled verification error")

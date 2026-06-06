@@ -25,4 +25,6 @@ class Config:
     VERIFICATION_URI: str = getenv("VERIFICATION_URI")
     PRIVACY_POLICY_URI: str = getenv("PRIVACY_POLICY_URI")
 
+    API_KEY: str = getenv("API_KEY")
+
 cfg = Config()
