@@ -1,16 +1,20 @@
 import asyncio
 import httpx
 
-from quart import Blueprint, jsonify
+from quart import Blueprint, jsonify, request
 
+from core import cfg
 from core.database.handlers import RestoreHandler
 from ..utils import refresh_token, add_member_to_guild
 
-restore_bp = Blueprint(
-    "restore",
-    __name__,
-    url_prefix="/restore"
-)
+
+restore_bp = Blueprint("restore", __name__, url_prefix="/restore")
+
+
+@restore_bp.before_request
+async def auth():
+    if request.headers.get("X-API-Key") != cfg.API_KEY:
+        return jsonify({"error": "Unauthorized"}), 401
 
 
 @restore_bp.post("/<guild_id>")
