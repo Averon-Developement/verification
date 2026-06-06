@@ -19,6 +19,19 @@ class MemberHandler:
         self.guild_id = guild_id
 
     @async_ensure_cursor
+    async def get_global_stats(self, *, cursor: Cursor = None) -> dict:
+        cursor.execute("SELECT COUNT(DISTINCT discord_id) AS total_users FROM users")
+        users = cursor.fetchone()
+
+        cursor.execute("SELECT COUNT(DISTINCT guild_id) AS total_guilds FROM server_members")
+        guilds = cursor.fetchone()
+
+        return {
+            "total_users": users["total_users"] if users else 0,
+            "total_guilds": guilds["total_guilds"] if guilds else 0,
+        }
+
+    @async_ensure_cursor
     async def get_members(self, *, cursor: Cursor = None) -> list[Member]:
         """
         Get all verified members for the guild.
