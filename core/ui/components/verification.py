@@ -41,7 +41,7 @@ class VerificationFollowupPanel(LayoutView):
             TextDisplay(
                 content=(
                     "In order to protect our server, we require you to authorize with our bot before completing verification. "
-                    "Click `Authorize` and continue.\n\n"
+                    "Click `Authorize` and continue. You have 30 seconds before this message gets deleted.\n\n"
                     "-# If you have any concerns about your data, please read our Privacy Policy before proceeding."
                 )
             )

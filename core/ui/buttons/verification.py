@@ -71,5 +71,6 @@ class VerificationStartButton(Button):
         
         await interaction.response.send_message(
             view=VerificationFollowupPanel(),
-            ephemeral=True
+            ephemeral=True,
+            delete_after=30
         )
