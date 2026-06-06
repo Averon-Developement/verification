@@ -241,3 +241,23 @@ class DiscordService:
                 discord_id,
             )
             return False
+        
+    async def get_guild(
+        self,
+        guild_id: str,
+    ) -> dict | None:
+        """
+        Get a guild.
+
+        :param guild_id: The Discord guild ID.
+        :return: The guild payload, if found.
+        """
+        response = await self.client.get(
+            f"{disc.DISCORD_API}/guilds/{guild_id}",
+            headers=self.bot_headers,
+        )
+
+        if response.status_code != 200:
+            return None
+
+        return response.json()

@@ -2,17 +2,17 @@ import asyncio
 from urllib.parse import urlencode
 
 import httpx
-from quart import (
-    Blueprint,
-    redirect,
-    render_template,
-    request
-)
+from quart import Blueprint, redirect, request
 
 from core import cfg, logger, disc
 from core.database.handlers import SettingsHandler, VerifyHandler
 
-from ..utils import send_verification_log, render_error, render_result
+from ..utils import (
+    send_verification_log,
+    render_error,
+    render_result,
+    send_verification_dm
+)
 from ..services import DiscordService
 
 
@@ -78,7 +78,6 @@ async def callback():
                 return await render_error()
 
             discord_id = user["id"]
-
             handler = VerifyHandler()
 
             await handler.save_user(
@@ -141,7 +140,20 @@ async def callback():
                 )
 
             if settings.dm_user:
-                pass
+                guild = await discord.get_guild(guild_id)
+
+                guild_name = (
+                    guild["name"]
+                    if guild
+                    else "Unknown Server"
+                )
+
+                await send_verification_dm(
+                    client=client,
+                    discord_id=discord_id,
+                    guild_id=guild_id,
+                    guild_name=guild_name,
+                )                
 
             return await render_result(
                 title="Successfully Verified",
