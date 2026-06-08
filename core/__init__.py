@@ -6,5 +6,5 @@ __all__ = [
     "cfg",
     "logger",
     "colors",
-    "disc"
+    "disc",
 ]

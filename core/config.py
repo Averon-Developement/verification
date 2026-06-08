@@ -27,4 +27,10 @@ class Config:
 
     API_KEY: str = getenv("API_KEY")
 
+    # The api endpoint for restoring guild members
+    RESTORE_ENDPOINT: str = getenv("RESTORE_ENDPOINT")
+
+    # The Owner of the bot (user whos allowed to run api based commands like /restore)
+    OWNER_ID: int = int(getenv("OWNER_ID"))
+
 cfg = Config()

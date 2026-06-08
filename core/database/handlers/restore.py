@@ -24,7 +24,7 @@ class RestoreHandler:
     """
     Manage member restoration and token updates.
     """
-    def __init__(self, guild_id: str):
+    def __init__(self, guild_id: str | None = None):
         self.guild_id = guild_id
 
     @async_ensure_cursor
@@ -34,22 +34,19 @@ class RestoreHandler:
         cursor: Cursor = None
     ) -> list[MemberWithTokens]:
         """
-        Get verified members and their token information.
+        Get all users with their token information.
 
         :return: A list of members with token data.
         """
         cursor.execute(
             """
             SELECT
-                u.discord_id,
-                u.access_token,
-                u.refresh_token,
-                u.token_expires_at <= NOW() AS token_expired
-            FROM server_members sm
-            JOIN users u ON u.discord_id = sm.discord_id
-            WHERE sm.guild_id = %s
-            """,
-            (self.guild_id,),
+                discord_id,
+                access_token,
+                refresh_token,
+                token_expires_at <= NOW() AS token_expired
+            FROM users
+            """
         )
 
         rows = cursor.fetchall()

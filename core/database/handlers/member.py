@@ -23,7 +23,7 @@ class MemberHandler:
         cursor.execute("SELECT COUNT(DISTINCT discord_id) AS total_users FROM users")
         users = cursor.fetchone()
 
-        cursor.execute("SELECT COUNT(DISTINCT guild_id) AS total_guilds FROM server_members")
+        cursor.execute("SELECT COUNT(DISTINCT guild_id) AS total_guilds FROM servers")
         guilds = cursor.fetchone()
 
         return {

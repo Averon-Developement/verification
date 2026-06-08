@@ -70,7 +70,7 @@ class VerificationStartButton(Button):
             )
         
         await interaction.response.send_message(
-            view=VerificationFollowupPanel(),
+            view=VerificationFollowupPanel(interaction.guild.id),
             ephemeral=True,
             delete_after=30
         )
