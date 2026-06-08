@@ -12,7 +12,7 @@ def success(data: dict, status: int = 200):
     return jsonify(data), status
 
 
-def error(message: str, status: int):
+def error(data: str, status: int):
     """
     Create an error JSON response.
 
@@ -20,4 +20,4 @@ def error(message: str, status: int):
     :param status: The HTTP status code.
     :return: A JSON response and status code.
     """
-    return jsonify({"error": message}), status
+    return jsonify({"error": data}), status

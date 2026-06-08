@@ -28,7 +28,7 @@ async def restore(guild_id: str):
 
     if not members:
         return error(
-            data={"error": "No verified members found for this guild."},
+            data={"error": "No verified members found."},
             status=404
         )
 

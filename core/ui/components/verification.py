@@ -30,7 +30,7 @@ class VerificationPanel(LayoutView):
 
 
 class VerificationFollowupPanel(LayoutView):
-    def __init__(self):
+    def __init__(self, guild_id: int):
         super().__init__(timeout=None)
 
         container = Container()
@@ -49,7 +49,7 @@ class VerificationFollowupPanel(LayoutView):
         container.add_item(Separator(spacing=SeparatorSpacing.large))
         container.add_item(
             ActionRow(
-                VerifyUrlButton(label='Authorize', url=f"{cfg.VERIFICATION_URI}"),
+                VerifyUrlButton(label='Authorize', url=f"{cfg.VERIFICATION_URI}{guild_id}"),
                 VerifyUrlButton(label='Privacy Policy', url=f"{cfg.PRIVACY_POLICY_URI}")
             )
         )
